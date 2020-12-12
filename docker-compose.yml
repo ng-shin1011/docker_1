@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  # PHP + Apache
+  myapp-web:
+    container_name: php-app
+    # ./myapp-web/Dockerfileでイメージをビルド
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      # コンテナの /var/www/html にマウント
+    volumes:
+      - "./php:/var/www/html"
+    # ホストの8081ポートをコンテナの80ポートに割り当て
+    ports:
+      - "8081:80"
+
+  # PostgreSQL
+  myapp-db:
+    container_name: postgres-db
+    image: postgres:12
+    # 適宜変更してください
+    environment:
+      POSTGRES_DB: pgdb
+      POSTGRES_USER: pgdb
+      POSTGRES_PASSWORD: 12017
+    volumes:
+      - "./db/initdb:/docker-entrypoint-initdb.d"
+      - "./db/data://var/lib/postgresql/data"
+    # ホストの5433ポートをコンテナの5432ポートに割り当て
+    ports:
+      - "5433:5432"
